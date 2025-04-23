@@ -22,6 +22,9 @@
                                 @endforeach
                             </ul>
                         @endif
+                        <a href="{{ route('patient.appointments.create.form') }}" class="btn btn-success mt-3">
+                            Book New Appointment
+                        </a>
                     </div>
                 </div>
             </div>

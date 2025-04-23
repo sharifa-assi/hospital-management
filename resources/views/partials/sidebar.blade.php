@@ -6,6 +6,10 @@
                 Doctors</a>
             <a href="{{ route('patient.appointments') }}" class="list-group-item list-group-item-action">Your
                 Appointments</a>
+            <a href="{{ route('patient.appointments.create.form') }}"
+                class="list-group-item list-group-item-action text-success">
+                Book New Appointment
+            </a>
         @elseif($userRole == 'doctor')
             <a href="{{ route('doctor.appointments') }}" class="list-group-item list-group-item-action active">Your
                 Appointments</a>

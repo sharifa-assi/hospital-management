@@ -27,7 +27,7 @@ class DashboardController extends Controller
 
         return view('admin.allDoctors', [
             'doctors' => $doctors,
-            'userRole' => Auth::user()->role
+            'userRole' => Auth::user()->role,
         ]);
     }
 
@@ -71,7 +71,7 @@ class DashboardController extends Controller
 
         return view('admin.allPatients', [
             'patients' => $patients,
-            'userRole' => Auth::user()->role
+            'userRole' => Auth::user()->role,
         ]);
     }
 
@@ -93,7 +93,7 @@ class DashboardController extends Controller
 
         return view('patient.doctors', [
             'doctors' => $doctors,
-            'userRole' => $user->role
+            'userRole' => $user->role,
         ]);
     }
 
@@ -111,14 +111,54 @@ class DashboardController extends Controller
             abort(404, 'Patient not found.');
         }
 
-        $appointments = $patient->appointments()
+        $appointments = $patient
+            ->appointments()
             ->with(['doctor.user'])
             ->orderBy('scheduled_at')
             ->get();
 
         return view('patient.appointments', [
             'appointments' => $appointments,
-            'userRole' => $user->role
+            'userRole' => $user->role,
+        ]);
+    }
+
+    public function createAppointment(Request $request)
+    {
+        $request->validate([
+            'doctor_id' => 'required|exists:doctors,id',
+            'scheduled_at' => 'required|date|after:now',
+        ]);
+
+        $patient = Patient::where('user_id', Auth::id())->first();
+
+        if (!$patient) {
+            abort(403, 'Unauthorized access. Patient not found.');
+        }
+
+        Appointment::create([
+            'patient_id' => $patient->id,
+            'doctor_id' => $request->doctor_id,
+            'scheduled_at' => $request->scheduled_at,
+            'status' => 'scheduled',
+        ]);
+
+        return redirect()->route('patient.appointments')->with('success', 'Appointment created successfully!');
+    }
+
+    public function createAppointmentForm()
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'patient') {
+            abort(403, 'Unauthorized');
+        }
+
+        $doctors = Doctor::all();
+
+        return view('patient.createAppointment', [
+            'doctors' => $doctors,
+            'userRole' => $user->role,
         ]);
     }
 }

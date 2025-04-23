@@ -18,12 +18,16 @@ Route::middleware('auth')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/patient/doctors', [DashboardController::class, 'getMyDoctors'])
-    ->middleware('auth')
-    ->name('patient.doctors');
+        ->middleware('auth')
+        ->name('patient.doctors');
 
     Route::get('/patient/appointments', [DashboardController::class, 'getMyAppointments'])
-    ->middleware('auth')
-    ->name('patient.appointments');
+        ->middleware('auth')
+        ->name('patient.appointments');
+
+    Route::get('/patient/appointments/create', [DashboardController::class, 'createAppointmentForm'])->name('patient.appointments.create.form');
+
+    Route::post('/patient/appointments/store', [DashboardController::class, 'createAppointment'])->name('patient.appointments.store');
 
     Route::get('/doctor/appointments', function () {
         return view('doctor.appointments', ['userRole' => Auth::user()->role]);
