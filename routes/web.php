@@ -17,19 +17,13 @@ Route::get('/', function () {
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/patient/doctors', function () {
-        if (Auth::user()->role !== 'patient') {
-            abort(403, 'Unauthorized access.');
-        }
-        return view('patient.doctors', ['userRole' => Auth::user()->role]);
-    })->name('patient.doctors');
+    Route::get('/patient/doctors', [DashboardController::class, 'getMyDoctors'])
+    ->middleware('auth')
+    ->name('patient.doctors');
 
-    Route::get('/patient/appointments', function () {
-        if (Auth::user()->role !== 'patient') {
-            abort(403, 'Unauthorized access.');
-        }
-        return view('patient.appointments', ['userRole' => Auth::user()->role]);
-    })->name('patient.appointments');
+    Route::get('/patient/appointments', [DashboardController::class, 'getMyAppointments'])
+    ->middleware('auth')
+    ->name('patient.appointments');
 
     Route::get('/doctor/appointments', function () {
         return view('doctor.appointments', ['userRole' => Auth::user()->role]);

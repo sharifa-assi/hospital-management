@@ -75,4 +75,50 @@ class DashboardController extends Controller
         ]);
     }
 
+    public function getMyDoctors()
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'patient') {
+            abort(403, 'Unauthorized');
+        }
+
+        $patient = Patient::where('user_id', $user->id)->first();
+
+        if (!$patient) {
+            abort(404, 'Patient not found.');
+        }
+
+        $doctors = $patient->doctors()->with('user')->get();
+
+        return view('patient.doctors', [
+            'doctors' => $doctors,
+            'userRole' => $user->role
+        ]);
+    }
+
+    public function getMyAppointments()
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'patient') {
+            abort(403, 'Unauthorized');
+        }
+
+        $patient = Patient::where('user_id', $user->id)->first();
+
+        if (!$patient) {
+            abort(404, 'Patient not found.');
+        }
+
+        $appointments = $patient->appointments()
+            ->with(['doctor.user'])
+            ->orderBy('scheduled_at')
+            ->get();
+
+        return view('patient.appointments', [
+            'appointments' => $appointments,
+            'userRole' => $user->role
+        ]);
+    }
 }
