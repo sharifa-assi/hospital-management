@@ -171,4 +171,77 @@ class DashboardController extends Controller
             'userRole' => $user->role,
         ]);
     }
+
+    public function getMyAppointmentsForDoctor()
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'doctor') {
+            abort(403, 'Unauthorized access. Only doctors can view their appointments.');
+        }
+
+        $doctor = Doctor::where('user_id', $user->id)->first();
+
+        if (!$doctor) {
+            abort(404, 'Doctor not found.');
+        }
+
+        $appointments = Appointment::where('doctor_id', $doctor->id)
+            ->with(['patient.user'])
+            ->orderBy('scheduled_at')
+            ->get();
+
+        return view('doctor.appointments', [
+            'appointments' => $appointments,
+            'userRole' => $user->role,
+        ]);
+    }
+
+    public function updateAppointmentStatus($appointmentId)
+    {
+        $appointment = Appointment::findOrFail($appointmentId);
+
+        $user = Auth::user();
+        if ($user->role !== 'doctor') {
+            abort(403, 'Unauthorized');
+        }
+
+        if ($appointment->status == 'scheduled') {
+            $appointment->status = 'completed';
+        } elseif ($appointment->status == 'completed') {
+            $appointment->status = 'canceled';
+        } else {
+            $appointment->status = 'scheduled';
+        }
+
+        $appointment->save();
+
+        return redirect()->back()->with('success', 'Appointment status updated successfully!');
+    }
+
+    public function getMyPatients()
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'doctor') {
+            abort(403, 'Unauthorized access. Only doctors can view their patients.');
+        }
+
+        $doctor = Doctor::where('user_id', $user->id)->first();
+
+        if (!$doctor) {
+            abort(404, 'Doctor not found.');
+        }
+
+        $patients = Patient::whereHas('appointments', function ($query) use ($doctor) {
+            $query->where('doctor_id', $doctor->id);
+        })
+            ->with('user')
+            ->get();
+
+        return view('doctor.patients', [
+            'patients' => $patients,
+            'userRole' => $user->role,
+        ]);
+    }
 }

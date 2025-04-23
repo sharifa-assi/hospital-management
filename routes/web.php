@@ -29,13 +29,13 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/patient/appointments/store', [DashboardController::class, 'createAppointment'])->name('patient.appointments.store');
 
-    Route::get('/doctor/appointments', function () {
-        return view('doctor.appointments', ['userRole' => Auth::user()->role]);
-    })->name('doctor.appointments');
+    Route::middleware(['auth'])
+        ->get('/doctor/appointments', [DashboardController::class, 'getMyAppointmentsForDoctor'])
+        ->name('doctor.appointments');
 
-    Route::get('/doctor/patients', function () {
-        return view('doctor.patients', ['userRole' => Auth::user()->role]);
-    })->name('doctor.patients');
+    Route::put('/appointments/{appointment}/status', [DashboardController::class, 'updateAppointmentStatus'])->name('doctor.updateStatus');
+
+    Route::get('/doctor/patients', [DashboardController::class, 'getMyPatients'])->name('doctor.patients');
 
     Route::get('/doctor/upload', function () {
         return view('doctor.upload', ['userRole' => Auth::user()->role]);
