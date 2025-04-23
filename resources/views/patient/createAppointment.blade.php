@@ -22,8 +22,8 @@
                             </div>
                             <div class="form-group mt-3">
                                 <label for="scheduled_at">Appointment Date & Time</label>
-                                <input type="datetime-local" name="scheduled_at" id="scheduled_at" class="form-control"
-                                    required>
+                                <input type="datetime-local" name="scheduled_at" class="form-control"
+                                    min="{{ now()->toDateString() }}T{{ now()->format('H:i') }}" required>
                             </div>
                             <button type="submit" class="btn btn-primary mt-3">Book Appointment</button>
                         </form>
