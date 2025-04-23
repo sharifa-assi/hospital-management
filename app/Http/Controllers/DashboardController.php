@@ -136,9 +136,19 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized access. Patient not found.');
         }
 
+        $doctor = Doctor::find($request->doctor_id);
+
+        if (!$doctor) {
+            abort(404, 'Doctor not found.');
+        }
+
+        if (!$patient->doctors->contains($doctor)) {
+            $patient->doctors()->attach($doctor->id);
+        }
+
         Appointment::create([
             'patient_id' => $patient->id,
-            'doctor_id' => $request->doctor_id,
+            'doctor_id' => $doctor->id,
             'scheduled_at' => $request->scheduled_at,
             'status' => 'scheduled',
         ]);
