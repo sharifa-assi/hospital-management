@@ -17,16 +17,25 @@ class DashboardController extends Controller
         return view('dashboard', ['userRole' => $user->role]);
     }
 
-    public function getAllDoctors()
+    public function getAllDoctors(Request $request)
     {
         if (Auth::user()->role !== 'admin') {
             abort(403, 'Unauthorized');
         }
 
-        $doctors = Doctor::with('user', 'appointments')->get();
+        $search = $request->query('search');
+
+        $doctors = Doctor::with(['user', 'appointments'])
+            ->when($search, function ($query, $search) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                });
+            })
+            ->paginate(5);
 
         return view('admin.allDoctors', [
             'doctors' => $doctors,
+            'search' => $search,
             'userRole' => Auth::user()->role,
         ]);
     }
@@ -61,19 +70,28 @@ class DashboardController extends Controller
         return redirect()->route('admin.allDoctors')->with('success', 'Doctor added successfully!');
     }
 
-    public function getAllPatients()
+    public function getAllPatients(Request $request)
     {
         if (Auth::user()->role !== 'admin') {
             abort(403, 'Unauthorized');
         }
 
-        $patients = Patient::with(['user', 'doctors'])->get();
+        $query = Patient::with(['user', 'doctors.user']);
+
+        if ($request->has('search')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $patients = $query->paginate(10);
 
         return view('admin.allPatients', [
             'patients' => $patients,
             'userRole' => Auth::user()->role,
         ]);
     }
+
 
     public function getMyDoctors()
     {
