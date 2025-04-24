@@ -21,7 +21,6 @@ function App() {
 
   const contentStyle = {
     marginLeft: token ? '250px' : '0',
-    padding: '20px',
     width: '100%',
   };
 
@@ -80,7 +79,6 @@ function App() {
 const styles = {
   appContainer: {
     display: 'flex',
-    paddingTop: '60px',
   },
 };
 

@@ -11,17 +11,17 @@ function Sidebar() {
         {role === 'admin' && (
           <>
             <li>
-              <NavLink to="/admin/doctors" className="sidebar-item" activeClassName="active-link">
+              <NavLink to="/admin/doctors" className={({ isActive }) => isActive ? "sidebar-item active-link" : "sidebar-item"}>
                 All Doctors
               </NavLink>
             </li>
             <li>
-              <NavLink to="/admin/add-doctor" className="sidebar-item" activeClassName="active-link">
+              <NavLink to="/admin/add-doctor" className={({ isActive }) => isActive ? "sidebar-item active-link" : "sidebar-item"}>
                 Add Doctor
               </NavLink>
             </li>
             <li>
-              <NavLink to="/admin/patients" className="sidebar-item" activeClassName="active-link">
+              <NavLink to="/admin/patients" className={({ isActive }) => isActive ? "sidebar-item active-link" : "sidebar-item"}>
                 All Patients
               </NavLink>
             </li>
@@ -31,17 +31,17 @@ function Sidebar() {
         {role === 'doctor' && (
           <>
             <li>
-              <NavLink to="/doctor/appointments" className="sidebar-item" activeClassName="active-link">
+              <NavLink to="/doctor/appointments" className={({ isActive }) => isActive ? "sidebar-item active-link" : "sidebar-item"}>
                 Appointments
               </NavLink>
             </li>
             <li>
-              <NavLink to="/doctor/patients" className="sidebar-item" activeClassName="active-link">
+              <NavLink to="/doctor/patients" className={({ isActive }) => isActive ? "sidebar-item active-link" : "sidebar-item"}>
                 Your Patients
               </NavLink>
             </li>
             <li>
-              <NavLink to="/doctor/upload-file" className="sidebar-item" activeClassName="active-link">
+              <NavLink to="/doctor/upload-file" className={({ isActive }) => isActive ? "sidebar-item active-link" : "sidebar-item"}>
                 Upload File
               </NavLink>
             </li>
@@ -51,17 +51,17 @@ function Sidebar() {
         {role === 'patient' && (
           <>
             <li>
-              <NavLink to="/patient/doctors" className="sidebar-item" activeClassName="active-link">
+              <NavLink to="/patient/doctors" className={({ isActive }) => isActive ? "sidebar-item active-link" : "sidebar-item"}>
                 Your Doctors
               </NavLink>
             </li>
             <li>
-              <NavLink to="/patient/appointments" className="sidebar-item" activeClassName="active-link">
+              <NavLink to="/patient/appointments" className={({ isActive }) => isActive ? "sidebar-item active-link" : "sidebar-item"}>
                 Appointments
               </NavLink>
             </li>
             <li>
-              <NavLink to="/patient/appointments/store" className="sidebar-item" activeClassName="active-link">
+              <NavLink to="/patient/appointments/store" className={({ isActive }) => isActive ? "sidebar-item active-link" : "sidebar-item"}>
                 Book an Appointment
               </NavLink>
             </li>
