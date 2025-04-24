@@ -42,13 +42,16 @@ function Login() {
     try {
       const response = await axios.post('/login', values);
       localStorage.setItem('token', response.data.token);
+  
+      const { id, name, email, role } = response.data.user;
+      localStorage.setItem('user', JSON.stringify({ id, name, email, role })); 
+  
       setError('');
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.error || 'Login failed');
     }
   };
-  
 
   return (
     <div className="register-page">
