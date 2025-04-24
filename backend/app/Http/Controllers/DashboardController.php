@@ -9,6 +9,9 @@ use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use App\Models\File;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -28,12 +31,12 @@ class DashboardController extends Controller
 
         $search = $request->query('search');
         $doctors = Doctor::with(['user', 'appointments.patient.user'])
-        ->when($search, function ($query, $search) {
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%');
-            });
-        })
-        ->get();
+            ->when($search, function ($query, $search) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
+                });
+            })
+            ->get();
 
         return response()->json($doctors);
     }
@@ -192,7 +195,6 @@ class DashboardController extends Controller
         if ($user->role !== 'doctor') {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-    
         $newStatus = request()->input('status');
 
         if (!in_array($newStatus, ['scheduled', 'completed', 'canceled'])) {
@@ -225,7 +227,7 @@ class DashboardController extends Controller
         $patients = Patient::whereHas('appointments', function ($query) use ($doctor) {
             $query->where('doctor_id', $doctor->id);
         })
-            ->with('user')
+            ->with(['user', 'files'])
             ->get();
 
         return response()->json($patients);
@@ -236,4 +238,55 @@ class DashboardController extends Controller
         $doctors = Doctor::with('user')->get();
         return response()->json($doctors);
     }
+
+    public function uploadFile(Request $request)
+    {
+        $request->validate([
+            'patient_id' => 'required|exists:patients,id',
+            'file' => 'required|file|max:10240',
+        ]);
+
+        $user = Auth::user();
+
+        if ($user->role !== 'doctor') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $doctor = Doctor::where('user_id', $user->id)->first();
+        if (!$doctor) {
+            return response()->json(['error' => 'Doctor not found'], 404);
+        }
+
+        $file = $request->file('file');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('public/uploads', $filename);
+
+        File::create([
+            'doctor_id' => $doctor->id,
+            'patient_id' => $request->patient_id,
+            'filename' => $filename,
+            'path' => $path,
+            'uploaded_at' => Carbon::now(),
+        ]);
+
+        return response()->json(['message' => 'File uploaded successfully']);
+    }
+
+    public function viewFile($id)
+    {
+        $file = File::find($id);
+
+        if (!$file) {
+            return response()->json(['error' => 'File not found.'], 404);
+        }
+
+        $path = $file->path;
+
+        if (!Storage::exists($path)) {
+            return response()->json(['error' => 'File not found on server.'], 404);
+        }
+
+        return Storage::download($path, $file->filename);
+    }
+
 }

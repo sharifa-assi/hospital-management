@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from '../../api/axios';
+import './createAppointment.css'; 
 
 function CreateAppointment() {
   const [form, setForm] = useState({
@@ -54,35 +55,57 @@ function CreateAppointment() {
       setMessage(error.response?.data?.error || 'Failed to create appointment. Please try again.');
     }
   };
-  
 
   return (
-    <div>
+    <div className="appointment-container">
       <h2>Create Appointment</h2>
-      <form onSubmit={handleSubmit}>
-        <select name="doctor_id" onChange={handleChange} value={form.doctor_id}>
-          <option value="">Select Doctor</option>
-          {doctors.map((doctor) => (
-            <option key={doctor.id} value={doctor.id}>
+      <form onSubmit={handleSubmit} className="appointment-form">
+        <div className="form-group">
+          <label htmlFor="doctor_id">Select Doctor:</label>
+          <select
+            name="doctor_id"
+            id="doctor_id"
+            onChange={handleChange}
+            value={form.doctor_id}
+            className="form-input"
+          >
+            <option value="">Select Doctor</option>
+            {doctors.map((doctor) => (
+              <option key={doctor.id} value={doctor.id}>
                 {doctor.user?.name} - {doctor.specialty}
-            </option>
+              </option>
             ))}
-        </select>
-        <input
-          type="date"
-          name="appointment_date"
-          onChange={handleChange}
-          value={form.appointment_date}
-        />
-        <input
-          type="time"
-          name="appointment_time"
-          onChange={handleChange}
-          value={form.appointment_time}
-        />
-        <button type="submit">Create Appointment</button>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="appointment_date">Appointment Date:</label>
+          <input
+            type="date"
+            name="appointment_date"
+            id="appointment_date"
+            onChange={handleChange}
+            value={form.appointment_date}
+            className="form-input"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="appointment_time">Appointment Time:</label>
+          <input
+            type="time"
+            name="appointment_time"
+            id="appointment_time"
+            onChange={handleChange}
+            value={form.appointment_time}
+            className="form-input"
+          />
+        </div>
+
+        <button type="submit" className="submit-btn">Create Appointment</button>
       </form>
-      {message && <p>{message}</p>}
+
+      {message && <p className="message">{message}</p>}
     </div>
   );
 }

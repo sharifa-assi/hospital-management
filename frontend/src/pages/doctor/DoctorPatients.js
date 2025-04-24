@@ -8,11 +8,20 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TablePagination from '@mui/material/TablePagination';
+import IconButton from '@mui/material/IconButton';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 function DoctorPatients() {
   const [patients, setPatients] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [fileUrl, setFileUrl] = useState(null);
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -39,6 +48,42 @@ function DoctorPatients() {
     setPage(0);
   };
 
+  const handleViewFile = async (fileId) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await axios.get(`/files/${fileId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: 'blob',
+      });
+  
+      const contentDisposition = response.headers['content-disposition'];
+      let filename = 'downloaded_file.docx'; 
+
+      if (contentDisposition && contentDisposition.includes('filename=')) {
+        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+        if (match?.[1]) filename = match[1];
+      }
+  
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Failed to view/download file:', error);
+    }
+  };
+  
+  
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setFileUrl(null);
+  };
+
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <TableContainer sx={{ maxHeight: 500 }}>
@@ -48,7 +93,8 @@ function DoctorPatients() {
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Date of Birth</TableCell> {/* Updated header */}
+              <TableCell>Date of Birth</TableCell>
+              <TableCell>Files</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -59,7 +105,23 @@ function DoctorPatients() {
                   <TableCell>{patient.id}</TableCell>
                   <TableCell>{patient.user.name}</TableCell>
                   <TableCell>{patient.user.email}</TableCell>
-                  <TableCell>{patient.date_of_birth}</TableCell> {/* Updated data */}
+                  <TableCell>{patient.date_of_birth}</TableCell>
+                  <TableCell>
+                    {patient.files && patient.files.length > 0 ? (
+                      patient.files.map((file) => (
+                        <IconButton
+                          key={file.id}
+                          color="primary"
+                          onClick={() => handleViewFile(file.id)}
+                          title={file.filename}
+                        >
+                          <FileCopyIcon />
+                        </IconButton>
+                      ))
+                    ) : (
+                      <span>No files</span>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
@@ -74,6 +136,26 @@ function DoctorPatients() {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="lg" fullWidth>
+        <DialogTitle>View File</DialogTitle>
+        <DialogContent>
+          {fileUrl && (
+            <iframe
+              src={fileUrl}
+              title="File Viewer"
+              width="100%"
+              height="500px"
+              style={{ border: 'none' }}
+            ></iframe>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 }

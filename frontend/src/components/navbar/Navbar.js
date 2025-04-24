@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import axios from "../../api/axios";
 import "./navbar.css";
 
 function NavBar() {
@@ -8,6 +9,7 @@ function NavBar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Check login status on initial load and whenever the location changes
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
@@ -15,17 +17,34 @@ function NavBar() {
 
   const handleClick = () => setClick(!click);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      // Call the backend logout API to invalidate the token (optional)
+      await axios.post('/api/logout', {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      // Remove token from localStorage
+      localStorage.removeItem("token");
+      setIsLoggedIn(false);
+
+      // Manually trigger redirect to login page
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      localStorage.removeItem("token");  // Ensure token is removed on error
+      setIsLoggedIn(false);
+      navigate("/login");  // Redirect to login in case of failure
+    }
   };
 
   return (
     <nav className="navbar">
       <div className="nav-container">
         <NavLink exact="true" to="/" className="nav-logo">
-          React Task <i className="fas fa-code"></i>
+          Hospital Management<i className="fas fa-code"></i>
         </NavLink>
 
         <ul className={click ? "nav-menu active" : "nav-menu"}>

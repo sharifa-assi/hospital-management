@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from '../../api/axios';
+import './addDoctor.css';
 
 function AddDoctor() {
   const [form, setForm] = useState({
@@ -29,7 +30,7 @@ function AddDoctor() {
       return;
     }
 
-    setError(''); 
+    setError('');
 
     try {
       const token = localStorage.getItem('token');
@@ -43,7 +44,7 @@ function AddDoctor() {
         password: '',
         password_confirmation: '',
         specialty: '',
-      }); 
+      });
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Failed to add doctor.';
       setMessage('');
@@ -52,46 +53,72 @@ function AddDoctor() {
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Add New Doctor</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          name="name"
-          placeholder="Name"
-          value={form.name}
-          onChange={handleChange}
-        />
-        <input
-          name="email"
-          placeholder="Email"
-          type="email"
-          value={form.email}
-          onChange={handleChange}
-        />
-        <input
-          name="password"
-          placeholder="Password"
-          type="password"
-          value={form.password}
-          onChange={handleChange}
-        />
-        <input
-          name="password_confirmation"
-          placeholder="Confirm Password"
-          type="password"
-          value={form.password_confirmation}
-          onChange={handleChange}
-        />
-        <input
-          name="specialty"
-          placeholder="Specialty"
-          value={form.specialty}
-          onChange={handleChange}
-        />
-        <button type="submit">Add Doctor</button>
+      <form onSubmit={handleSubmit} className="form">
+        <div className="form-group">
+          <label htmlFor="name">Name:</label>
+          <input
+            name="name"
+            placeholder="Name"
+            value={form.name}
+            onChange={handleChange}
+            className="form-input"
+          />
+        </div>
+        
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            name="email"
+            placeholder="Email"
+            type="email"
+            value={form.email}
+            onChange={handleChange}
+            className="form-input"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input
+            name="password"
+            placeholder="Password"
+            type="password"
+            value={form.password}
+            onChange={handleChange}
+            className="form-input"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="password_confirmation">Confirm Password:</label>
+          <input
+            name="password_confirmation"
+            placeholder="Confirm Password"
+            type="password"
+            value={form.password_confirmation}
+            onChange={handleChange}
+            className="form-input"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="specialty">Specialty:</label>
+          <input
+            name="specialty"
+            placeholder="Specialty"
+            value={form.specialty}
+            onChange={handleChange}
+            className="form-input"
+          />
+        </div>
+
+        <button type="submit" className="submit-btn">Add Doctor</button>
       </form>
-      {message && <p>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      {message && <p className="message success">{message}</p>}
+      {error && <p className="message error">{error}</p>}
     </div>
   );
 }

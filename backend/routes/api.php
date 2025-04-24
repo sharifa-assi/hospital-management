@@ -15,6 +15,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/patient/appointments/store', [DashboardController::class, 'createAppointment']);
 
     // Doctor routes
+    Route::post('/doctor/upload-file', [DashboardController::class, 'uploadFile']);
+    Route::get('/files/{id}', [DashboardController::class, 'viewFile']);
     Route::get('/doctor/appointments', [DashboardController::class, 'getMyAppointmentsForDoctor']);
     Route::put('/appointments/{appointment}/status', [DashboardController::class, 'updateAppointmentStatus']);
     Route::get('/doctor/patients', [DashboardController::class, 'getMyPatients']);

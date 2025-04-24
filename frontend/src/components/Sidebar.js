@@ -1,38 +1,85 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 function Sidebar() {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const role = user?.role;
-  
-    return (
-      <div style={styles.sidebar}>
-        <ul style={styles.sidebarList}>
-          {role === 'admin' && (
-            <>
-              <li><Link to="/admin/doctors" style={styles.sidebarItem}>All Doctors</Link></li>
-              <li><Link to="/admin/add-doctor" style={styles.sidebarItem}>Add Doctor</Link></li>
-              <li><Link to="/admin/patients" style={styles.sidebarItem}>All Patients</Link></li>
-            </>
-          )}
-  
-          {role === 'doctor' && (
-            <>
-              <li><Link to="/doctor/appointments" style={styles.sidebarItem}>Appointments</Link></li>
-              <li><Link to="/doctor/patients" style={styles.sidebarItem}>Your Patients</Link></li>
-            </>
-          )}
-  
-          {role === 'patient' && (
-            <>
-              <li><Link to="/patient/doctors" style={styles.sidebarItem}>Your Doctors</Link></li>
-              <li><Link to="/patient/appointments" style={styles.sidebarItem}>Appointments</Link></li>
-              <li><Link to="/patient/appointments/store" style={styles.sidebarItem}>Book an Appointment</Link></li>
-            </>
-          )}
-        </ul>
-      </div>
-    );
-  }  
+  const user = JSON.parse(localStorage.getItem('user'));
+  const role = user?.role;
+
+  return (
+    <div style={styles.sidebar}>
+      <ul style={styles.sidebarList}>
+        {role === 'admin' && (
+          <>
+            <li>
+              <NavLink to="/admin/doctors" style={styles.sidebarItem} activeClassName="active-link">
+                All Doctors
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/admin/add-doctor" style={styles.sidebarItem} activeClassName="active-link">
+                Add Doctor
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/admin/patients" style={styles.sidebarItem} activeClassName="active-link">
+                All Patients
+              </NavLink>
+            </li>
+          </>
+        )}
+
+        {role === 'doctor' && (
+          <>
+            <li>
+              <NavLink to="/doctor/appointments" style={styles.sidebarItem} activeClassName="active-link">
+                Appointments
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/doctor/patients" style={styles.sidebarItem} activeClassName="active-link">
+                Your Patients
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/doctor/upload-file" style={styles.sidebarItem} activeClassName="active-link">
+                Upload File
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/doctor/view-file" style={styles.sidebarItem} activeClassName="active-link">
+                View Files
+              </NavLink>
+            </li>
+          </>
+        )}
+
+        {role === 'patient' && (
+          <>
+            <li>
+              <NavLink to="/patient/doctors" style={styles.sidebarItem} activeClassName="active-link">
+                Your Doctors
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/patient/appointments" style={styles.sidebarItem} activeClassName="active-link">
+                Appointments
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/patient/appointments/store" style={styles.sidebarItem} activeClassName="active-link">
+                Book an Appointment
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/patient/view-file" style={styles.sidebarItem} activeClassName="active-link">
+                View Files
+              </NavLink>
+            </li>
+          </>
+        )}
+      </ul>
+    </div>
+  );
+}
 
 const styles = {
   sidebar: {

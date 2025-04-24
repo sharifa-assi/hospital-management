@@ -8,6 +8,7 @@ import AllDoctors from './pages/admin/AllDoctors';
 import Patients from './pages/admin/Patients';
 import DoctorAppointments from './pages/doctor/DoctorAppointments';
 import DoctorPatients from './pages/doctor/DoctorPatients';
+import UploadFile from './pages/doctor/UploadFile';
 import PatientsDoctors from './pages/patient/PatientsDoctors';
 import PatientsAppointments from './pages/patient/PatientsAppointments';
 import CreateAppointment from './pages/patient/CreateAppointment';
@@ -15,6 +16,7 @@ import './App.css';
 
 function App() {
   const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user'));
 
   const contentStyle = {
     marginLeft: token ? '250px' : '0',
@@ -46,15 +48,18 @@ function App() {
             ) : (
               <Route path="*" element={<Navigate to="/login" />} />
             )}
-            {token ? (
+
+            {token && user?.role === 'doctor' ? (
               <>
                 <Route path="/doctor/appointments" element={<DoctorAppointments />} />
                 <Route path="/doctor/patients" element={<DoctorPatients />} />
+                <Route path="/doctor/upload-file" element={<UploadFile />} />
               </>
             ) : (
               <Route path="*" element={<Navigate to="/login" />} />
             )}
-            {token ? (
+
+            {token && user?.role === 'patient' ? (
               <>
                 <Route path="/patient/doctors" element={<PatientsDoctors />} />
                 <Route path="/patient/appointments" element={<PatientsAppointments />} />
