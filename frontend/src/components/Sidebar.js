@@ -1,26 +1,27 @@
 import { Link, NavLink } from 'react-router-dom';
+import './sidebar.css';
 
 function Sidebar() {
   const user = JSON.parse(localStorage.getItem('user'));
   const role = user?.role;
 
   return (
-    <div style={styles.sidebar}>
-      <ul style={styles.sidebarList}>
+    <div className="sidebar">
+      <ul className="sidebar-list">
         {role === 'admin' && (
           <>
             <li>
-              <NavLink to="/admin/doctors" style={styles.sidebarItem} activeClassName="active-link">
+              <NavLink to="/admin/doctors" className="sidebar-item" activeClassName="active-link">
                 All Doctors
               </NavLink>
             </li>
             <li>
-              <NavLink to="/admin/add-doctor" style={styles.sidebarItem} activeClassName="active-link">
+              <NavLink to="/admin/add-doctor" className="sidebar-item" activeClassName="active-link">
                 Add Doctor
               </NavLink>
             </li>
             <li>
-              <NavLink to="/admin/patients" style={styles.sidebarItem} activeClassName="active-link">
+              <NavLink to="/admin/patients" className="sidebar-item" activeClassName="active-link">
                 All Patients
               </NavLink>
             </li>
@@ -30,23 +31,18 @@ function Sidebar() {
         {role === 'doctor' && (
           <>
             <li>
-              <NavLink to="/doctor/appointments" style={styles.sidebarItem} activeClassName="active-link">
+              <NavLink to="/doctor/appointments" className="sidebar-item" activeClassName="active-link">
                 Appointments
               </NavLink>
             </li>
             <li>
-              <NavLink to="/doctor/patients" style={styles.sidebarItem} activeClassName="active-link">
+              <NavLink to="/doctor/patients" className="sidebar-item" activeClassName="active-link">
                 Your Patients
               </NavLink>
             </li>
             <li>
-              <NavLink to="/doctor/upload-file" style={styles.sidebarItem} activeClassName="active-link">
+              <NavLink to="/doctor/upload-file" className="sidebar-item" activeClassName="active-link">
                 Upload File
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/doctor/view-file" style={styles.sidebarItem} activeClassName="active-link">
-                View Files
               </NavLink>
             </li>
           </>
@@ -55,22 +51,22 @@ function Sidebar() {
         {role === 'patient' && (
           <>
             <li>
-              <NavLink to="/patient/doctors" style={styles.sidebarItem} activeClassName="active-link">
+              <NavLink to="/patient/doctors" className="sidebar-item" activeClassName="active-link">
                 Your Doctors
               </NavLink>
             </li>
             <li>
-              <NavLink to="/patient/appointments" style={styles.sidebarItem} activeClassName="active-link">
+              <NavLink to="/patient/appointments" className="sidebar-item" activeClassName="active-link">
                 Appointments
               </NavLink>
             </li>
             <li>
-              <NavLink to="/patient/appointments/store" style={styles.sidebarItem} activeClassName="active-link">
+              <NavLink to="/patient/appointments/store" className="sidebar-item" activeClassName="active-link">
                 Book an Appointment
               </NavLink>
             </li>
             <li>
-              <NavLink to="/patient/view-file" style={styles.sidebarItem} activeClassName="active-link">
+              <NavLink to="/patient/view-file" className="sidebar-item" activeClassName="active-link">
                 View Files
               </NavLink>
             </li>
@@ -80,27 +76,5 @@ function Sidebar() {
     </div>
   );
 }
-
-const styles = {
-  sidebar: {
-    width: '250px',
-    backgroundColor: '#333',
-    position: 'fixed',
-    top: 60,
-    left: 0,
-    height: '100%',
-    paddingTop: '20px',
-  },
-  sidebarList: {
-    listStyleType: 'none',
-    padding: '0',
-  },
-  sidebarItem: {
-    color: '#fff',
-    padding: '10px 20px',
-    display: 'block',
-    textDecoration: 'none',
-  },
-};
 
 export default Sidebar;

@@ -9,7 +9,6 @@ function NavBar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Check login status on initial load and whenever the location changes
   useEffect(() => {
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
@@ -19,24 +18,25 @@ function NavBar() {
 
   const handleLogout = async () => {
     try {
-      // Call the backend logout API to invalidate the token (optional)
       await axios.post('/api/logout', {}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 
-      // Remove token from localStorage
       localStorage.removeItem("token");
       setIsLoggedIn(false);
 
-      // Manually trigger redirect to login page
       navigate("/login");
+
+      window.location.reload();
     } catch (error) {
       console.error("Logout failed:", error);
-      localStorage.removeItem("token");  // Ensure token is removed on error
+      localStorage.removeItem("token");
       setIsLoggedIn(false);
-      navigate("/login");  // Redirect to login in case of failure
+      navigate("/login"); 
+
+      window.location.reload();
     }
   };
 

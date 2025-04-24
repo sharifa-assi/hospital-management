@@ -12,6 +12,7 @@ import UploadFile from './pages/doctor/UploadFile';
 import PatientsDoctors from './pages/patient/PatientsDoctors';
 import PatientsAppointments from './pages/patient/PatientsAppointments';
 import CreateAppointment from './pages/patient/CreateAppointment';
+import Dashboard from './pages/Dashboard';
 import './App.css';
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
             />
             {token ? (
               <>
+                <Route path="/" element={<Dashboard />} />
                 <Route path="/admin/doctors" element={<AllDoctors />} />
                 <Route path="/admin/add-doctor" element={<AddDoctor />} />
                 <Route path="/admin/patients" element={<Patients />} />

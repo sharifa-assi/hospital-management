@@ -47,7 +47,8 @@ function Login() {
       localStorage.setItem('user', JSON.stringify({ id, name, email, role })); 
   
       setError('');
-      navigate('/');
+      
+      window.location.reload();
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
     }
