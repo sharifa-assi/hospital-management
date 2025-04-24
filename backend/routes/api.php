@@ -8,6 +8,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::middleware('auth:api')->group(function () {
+    Route::get('/doctors', [DashboardController::class, 'getAllDoctorsForPatients']);
     // Patient routes
     Route::get('/patient/doctors', [DashboardController::class, 'getMyDoctors']);
     Route::get('/patient/appointments', [DashboardController::class, 'getMyAppointments']);

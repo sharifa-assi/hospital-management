@@ -228,4 +228,10 @@ class DashboardController extends Controller
 
         return response()->json($patients);
     }
+
+    public function getAllDoctorsForPatients()
+    {
+        $doctors = Doctor::with('user')->get();
+        return response()->json($doctors);
+    }
 }
