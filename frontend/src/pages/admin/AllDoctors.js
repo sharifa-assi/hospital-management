@@ -8,6 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TablePagination from '@mui/material/TablePagination';
+import Typography from '@mui/material/Typography';
 
 function AllDoctors() {
   const [doctors, setDoctors] = useState([]);
@@ -47,33 +48,48 @@ function AllDoctors() {
     setPage(0);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 500 }}>
+      <TableContainer sx={{ maxHeight: 600 }}>
         <Table stickyHeader aria-label="Doctors Table">
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Specialty</TableCell>
+              <TableCell>Appointments</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {doctors
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((doctor) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={doctor.id}>
+                <TableRow hover key={doctor.id}>
                   <TableCell>{doctor.id}</TableCell>
-                  <TableCell>{doctor.user.name}</TableCell>
+                  <TableCell>{doctor.user?.name}</TableCell>
                   <TableCell>{doctor.specialty}</TableCell>
+                  <TableCell>
+                    {doctor.appointments && doctor.appointments.length > 0 ? (
+                      doctor.appointments.map((appt) => (
+                        <Typography
+                          key={appt.id}
+                          variant="body2"
+                          sx={{ borderBottom: '1px solid #ddd', mb: 1 }}
+                        >
+                          {new Date(appt.scheduled_at).toLocaleString()} – {appt.status}
+                          <br />
+                          Patient: {appt.patient?.user?.name || 'N/A'}
+                        </Typography>
+                      ))
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        No appointments
+                      </Typography>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>

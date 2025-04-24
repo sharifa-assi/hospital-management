@@ -11,23 +11,32 @@ import DoctorPatients from './pages/doctor/DoctorPatients';
 import PatientsDoctors from './pages/patient/PatientsDoctors';
 import PatientsAppointments from './pages/patient/PatientsAppointments';
 import CreateAppointment from './pages/patient/CreateAppointment';
-import './App.css'
+import './App.css';
 
 function App() {
   const token = localStorage.getItem('token');
+
+  const contentStyle = {
+    marginLeft: token ? '250px' : '0',
+    padding: '20px',
+    width: '100%',
+  };
 
   return (
     <BrowserRouter>
       <Navbar />
       <div style={styles.appContainer}>
-        <Sidebar />
-        <div style={styles.content}>
+        {token && <Sidebar />}
+        <div style={contentStyle}>
           <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-
-            {/* Admin Routes */}
+            <Route
+              path="/login"
+              element={token ? <Navigate to="/" /> : <Login />}
+            />
+            <Route
+              path="/register"
+              element={token ? <Navigate to="/" /> : <Register />}
+            />
             {token ? (
               <>
                 <Route path="/admin/doctors" element={<AllDoctors />} />
@@ -37,8 +46,6 @@ function App() {
             ) : (
               <Route path="*" element={<Navigate to="/login" />} />
             )}
-
-            {/* Doctor Routes */}
             {token ? (
               <>
                 <Route path="/doctor/appointments" element={<DoctorAppointments />} />
@@ -47,8 +54,6 @@ function App() {
             ) : (
               <Route path="*" element={<Navigate to="/login" />} />
             )}
-
-            {/* Patient Routes */}
             {token ? (
               <>
                 <Route path="/patient/doctors" element={<PatientsDoctors />} />
@@ -69,11 +74,6 @@ const styles = {
   appContainer: {
     display: 'flex',
     paddingTop: '60px',
-  },
-  content: {
-    marginLeft: '250px',
-    padding: '20px',
-    width: '100%',
   },
 };
 

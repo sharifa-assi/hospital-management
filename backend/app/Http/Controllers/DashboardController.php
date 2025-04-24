@@ -27,7 +27,7 @@ class DashboardController extends Controller
         }
 
         $search = $request->query('search');
-        $doctors = Doctor::with(['user', 'appointments'])
+        $doctors = Doctor::with(['user', 'appointments.patient.user'])
         ->when($search, function ($query, $search) {
             $query->whereHas('user', function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%');
@@ -192,18 +192,20 @@ class DashboardController extends Controller
         if ($user->role !== 'doctor') {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
+    
+        $newStatus = request()->input('status');
 
-        if ($appointment->status == 'scheduled') {
-            $appointment->status = 'completed';
-        } elseif ($appointment->status == 'completed') {
-            $appointment->status = 'canceled';
-        } else {
-            $appointment->status = 'scheduled';
+        if (!in_array($newStatus, ['scheduled', 'completed', 'canceled'])) {
+            return response()->json(['error' => 'Invalid status'], 400);
         }
+        $appointment->status = $newStatus;
 
         $appointment->save();
 
-        return response()->json(['message' => 'Appointment status updated successfully!']);
+        return response()->json([
+            'message' => 'Appointment status updated successfully!',
+            'appointment' => $appointment
+        ]);
     }
 
     public function getMyPatients()

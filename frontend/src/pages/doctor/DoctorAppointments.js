@@ -8,27 +8,55 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TablePagination from '@mui/material/TablePagination';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 
 function DoctorAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      const token = localStorage.getItem('token');
-      try {
-        const response = await axios.get('/doctor/appointments', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setAppointments(response.data);
-      } catch (error) {
-        console.error('Failed to fetch appointments:', error);
-      }
-    };
+  const fetchAppointments = async () => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await axios.get('/doctor/appointments', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("Appointments Data:", response.data);
+      setAppointments(response.data);
+    } catch (error) {
+      console.error('Failed to fetch appointments:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchAppointments();
   }, []);
+
+  const handleStatusChange = async (appointmentId, newStatus) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await axios.put(`/appointments/${appointmentId}/status`, 
+        { status: newStatus },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+  
+      const updatedAppointment = response.data.appointment;
+  
+      setAppointments((prevAppointments) =>
+        prevAppointments.map((appt) =>
+          appt.id === updatedAppointment.id ? { ...appt, status: updatedAppointment.status } : appt
+        )
+      );
+    } catch (error) {
+      console.error('Failed to update status:', error);
+    }
+  };
+  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -49,17 +77,38 @@ function DoctorAppointments() {
               <TableCell>Patient</TableCell>
               <TableCell>Scheduled At</TableCell>
               <TableCell>Status</TableCell>
+              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {appointments
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((appointment) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={appointment.id}>
+                <TableRow hover key={appointment.id}>
                   <TableCell>{appointment.id}</TableCell>
-                  <TableCell>{appointment.patient.name}</TableCell>
-                  <TableCell>{appointment.scheduled_at}</TableCell>
+                  <TableCell>
+                    {appointment.patient && appointment.patient.user
+                      ? appointment.patient.user.name
+                      : 'Unknown'}
+                  </TableCell>
+                  <TableCell>{new Date(appointment.scheduled_at).toLocaleString()}</TableCell>
                   <TableCell>{appointment.status}</TableCell>
+                  <TableCell>
+                    <FormControl fullWidth size="small">
+                      <InputLabel>Status</InputLabel>
+                      <Select
+                        value={appointment.status}
+                        label="Status"
+                        onChange={(e) =>
+                          handleStatusChange(appointment.id, e.target.value)
+                        }
+                      >
+                        <MenuItem value="scheduled">Scheduled</MenuItem>
+                        <MenuItem value="completed">Completed</MenuItem>
+                        <MenuItem value="canceled">Canceled</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
