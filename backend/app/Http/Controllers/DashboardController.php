@@ -28,12 +28,12 @@ class DashboardController extends Controller
 
         $search = $request->query('search');
         $doctors = Doctor::with(['user', 'appointments'])
-            ->when($search, function ($query, $search) {
-                $query->whereHas('user', function ($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%');
-                });
-            })
-            ->paginate(5);
+        ->when($search, function ($query, $search) {
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            });
+        })
+        ->get();
 
         return response()->json($doctors);
     }
@@ -85,7 +85,7 @@ class DashboardController extends Controller
             });
         }
 
-        $patients = $query->paginate(10);
+        $patients = $query->get();
         return response()->json($patients);
     }
 

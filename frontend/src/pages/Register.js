@@ -1,48 +1,108 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
+import Form from '../components/form/Form';
+import './register.css';
 
 function Register() {
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-    role: 'patient',
-  });
+  const navigate = useNavigate();
 
   const [error, setError] = useState('');
 
-  const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const [values, setValues] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: 'patient', 
+  });
 
-  const handleSubmit = async e => {
+  const inputs = [
+    {
+      id: 1,
+      name: 'name',
+      type: 'text',
+      placeholder: 'Name',
+      errorMessage: "Name should be 3-16 characters and shouldn't include special characters!",
+      label: 'Name',
+      pattern: '^[A-Za-z0-9]{3,16}$',
+      required: true,
+    },
+    {
+      id: 2,
+      name: 'email',
+      type: 'email',
+      placeholder: 'Email',
+      errorMessage: 'It should be a valid email address!',
+      label: 'Email',
+      required: true,
+    },
+    {
+      id: 3,
+      name: 'password',
+      type: 'password',
+      placeholder: 'Password',
+      errorMessage:
+        'Password should be at least 7 characters and include at least 1 capital letter, 1 number and 1 special character!',
+      label: 'Password',
+      pattern: `^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{7,}$`,
+      required: true,
+    },
+    {
+      id: 4,
+      name: 'confirmPassword',
+      type: 'password',
+      placeholder: 'Confirm Password',
+      errorMessage: "Passwords don't match!",
+      label: 'Confirm Password',
+      pattern: values.password,
+      required: true,
+    },
+  ];
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (values.password !== values.confirmPassword) {
+      setError("Passwords don't match!");
+      return;
+    }
+
     try {
-      const response = await axios.post('/register', form);
+      const response = await axios.post('/register', {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        password_confirmation: values.confirmPassword,
+        role: 'patient',
+      });
+
       localStorage.setItem('token', response.data.token);
-      alert('Registration successful!');
-      // Redirect if you want
+      navigate('/');
     } catch (err) {
       const msg = err.response?.data?.message || 'Registration failed';
       setError(msg);
     }
   };
 
+  const onChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+
   return (
-    <div>
-      <h2>Register</h2>
+    <div className="register-page">
       <form onSubmit={handleSubmit}>
-        <input name="name" placeholder="Name" value={form.name} onChange={handleChange} />
-        <input name="email" placeholder="Email" value={form.email} onChange={handleChange} />
-        <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange} />
-        <input type="password" name="password_confirmation" placeholder="Confirm Password" value={form.password_confirmation} onChange={handleChange} />
-        <select name="role" value={form.role} onChange={handleChange}>
-          <option value="patient">Patient</option>
-        </select>
+        <h1>Register</h1>
+        {inputs.map((input) => (
+          <Form
+            key={input.id}
+            {...input}
+            value={values[input.name]}
+            onChange={onChange}
+          />
+        ))}
         <button type="submit">Register</button>
+        {error && <p className="error">{error}</p>}
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 }

@@ -1,36 +1,69 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
+import Form from '../components/form/Form';
+import './register.css';
 
 function Login() {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [values, setValues] = useState({
+    email: '',
+    password: '',
+  });
 
-  const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const inputs = [
+    {
+      id: 1,
+      name: 'email',
+      type: 'email',
+      placeholder: 'Email',
+      errorMessage: 'It should be a valid email address!',
+      label: 'Email',
+      required: true,
+    },
+    {
+      id: 2,
+      name: 'password',
+      type: 'password',
+      placeholder: 'Password',
+      errorMessage: 'Password is required!',
+      label: 'Password',
+      required: true,
+    },
+  ];
+
+  const onChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/login', form);
+      const response = await axios.post('/login', values);
       localStorage.setItem('token', response.data.token);
       setError('');
-      alert('Login successful!');
-      // You can redirect user here, for example: window.location.href = '/dashboard'
+      navigate('/');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
+    <div className="register-page">
       <form onSubmit={handleSubmit}>
-        <input name="email" placeholder="Email" value={form.email} onChange={handleChange} />
-        <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} />
+        <h1>Login</h1>
+        {inputs.map((input) => (
+          <Form
+            key={input.id}
+            {...input}
+            value={values[input.name]}
+            onChange={onChange}
+          />
+        ))}
         <button type="submit">Login</button>
+        {error && <p className="error">{error}</p>}
       </form>
-      {error && <p style={{color: 'red'}}>{error}</p>}
     </div>
   );
 }

@@ -1,12 +1,33 @@
-import { useEffect, useState } from 'react';
+import * as React from 'react';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TablePagination from '@mui/material/TablePagination';
+import TableRow from '@mui/material/TableRow';
 import axios from '../../api/axios';
 
 function Patients() {
-  const [patients, setPatients] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [patients, setPatients] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState('');
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-  useEffect(() => {
+  const columns = [
+    { id: 'id', label: 'ID', minWidth: 50 },
+    { id: 'name', label: 'Name', minWidth: 170 },
+    { id: 'email', label: 'Email', minWidth: 200 },
+    { id: 'dob', label: 'Date of Birth', minWidth: 150 },
+  ];
+
+  function createData(id, name, email, dob) {
+    return { id, name, email, dob };
+  }
+
+  React.useEffect(() => {
     const fetchPatients = async () => {
       const token = localStorage.getItem('token');
       try {
@@ -14,12 +35,12 @@ function Patients() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (Array.isArray(response.data.data)) {
-          setPatients(response.data.data); 
-        } else {
-          console.error('Response data is not an array:', response.data);
-          setError('Unexpected data structure');
-        }
+        console.log('Response Data:', response.data); 
+
+        const newRows = response.data.map((patient) =>
+          createData(patient.id, patient.user.name, patient.user.email, patient.date_of_birth)
+        );
+        setPatients(newRows);
       } catch (err) {
         console.error('Error fetching patients:', err);
         setError('Failed to fetch patients');
@@ -31,6 +52,15 @@ function Patients() {
     fetchPatients();
   }, []);
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -40,16 +70,47 @@ function Patients() {
   }
 
   return (
-    <div>
-      <h2>All Patients</h2>
-      <ul>
-        {patients.map((patient) => (
-          <li key={patient.id}>
-            {patient.user.name} - {patient.user.email}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <TableContainer sx={{ maxHeight: 500 }}>
+        <Table stickyHeader aria-label="patients table">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell key={column.id} style={{ minWidth: column.minWidth }}>
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {patients
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((patient) => (
+                <TableRow hover role="checkbox" tabIndex={-1} key={patient.id}>
+                  {columns.map((column) => {
+                    const value = patient[column.id];
+                    return (
+                      <TableCell key={column.id}>
+                        {value}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[10, 25, 100]}
+        component="div"
+        count={patients.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{ justifyContent: 'center', alignItems: 'center' }}
+      />
+    </Paper>
   );
 }
 

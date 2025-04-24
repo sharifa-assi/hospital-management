@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Navbar from './components/navbar/Navbar';
 import Sidebar from './components/Sidebar';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -11,6 +11,7 @@ import DoctorPatients from './pages/doctor/DoctorPatients';
 import PatientsDoctors from './pages/patient/PatientsDoctors';
 import PatientsAppointments from './pages/patient/PatientsAppointments';
 import CreateAppointment from './pages/patient/CreateAppointment';
+import './App.css'
 
 function App() {
   const token = localStorage.getItem('token');

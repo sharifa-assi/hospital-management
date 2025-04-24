@@ -1,0 +1,8 @@
+.MuiTablePagination-root {
+    display: flex;
+    justify-content: center;
+  }
+  .css-78c6dr-MuiToolbar-root-MuiTablePagination-toolbar .MuiTablePagination-actions{
+    display: flex;
+  }
+  
