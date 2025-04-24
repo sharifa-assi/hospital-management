@@ -65,11 +65,6 @@ function Sidebar() {
                 Book an Appointment
               </NavLink>
             </li>
-            <li>
-              <NavLink to="/patient/view-file" className="sidebar-item" activeClassName="active-link">
-                View Files
-              </NavLink>
-            </li>
           </>
         )}
       </ul>

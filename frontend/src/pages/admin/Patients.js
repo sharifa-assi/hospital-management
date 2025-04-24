@@ -15,6 +15,7 @@ function Patients() {
   const [error, setError] = React.useState('');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [searchTerm, setSearchTerm] = React.useState('');
 
   const columns = [
     { id: 'id', label: 'ID', minWidth: 50 },
@@ -35,7 +36,7 @@ function Patients() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log('Response Data:', response.data); 
+        console.log('Response Data:', response.data);
 
         const newRows = response.data.map((patient) =>
           createData(patient.id, patient.user.name, patient.user.email, patient.date_of_birth)
@@ -61,56 +62,74 @@ function Patients() {
     setPage(0);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const filteredPatients = patients.filter((p) =>
+    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 500 }}>
-        <Table stickyHeader aria-label="patients table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell key={column.id} style={{ minWidth: column.minWidth }}>
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {patients
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((patient) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={patient.id}>
-                  {columns.map((column) => {
-                    const value = patient[column.id];
-                    return (
-                      <TableCell key={column.id}>
-                        {value}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={patients.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        sx={{ justifyContent: 'center', alignItems: 'center' }}
-      />
-    </Paper>
+    <>
+      <div style={{ padding: '16px 24px' }}>
+        <input
+          type="text"
+          placeholder="Search by name or email..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            padding: '12px 16px',
+            width: '300px',
+            borderRadius: '8px',
+            border: '1px solid #ccc',
+            fontSize: '16px'
+          }}
+        />
+      </div>
+
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+        <TableContainer sx={{ maxHeight: 500 }}>
+          <Table stickyHeader aria-label="patients table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell key={column.id} style={{ minWidth: column.minWidth }}>
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredPatients
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((patient) => (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={patient.id}>
+                    {columns.map((column) => {
+                      const value = patient[column.id];
+                      return (
+                        <TableCell key={column.id}>
+                          {value}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={filteredPatients.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{ justifyContent: 'center', alignItems: 'center' }}
+        />
+      </Paper>
+    </>
   );
 }
 

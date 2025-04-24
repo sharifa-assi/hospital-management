@@ -8,9 +8,19 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TablePagination from '@mui/material/TablePagination';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 
 function PatientsDoctors() {
   const [doctors, setDoctors] = useState([]);
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [specialtyFilter, setSpecialtyFilter] = useState('');
+  const [specialties, setSpecialties] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -21,10 +31,29 @@ function PatientsDoctors() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setDoctors(response.data);
+
+      const uniqueSpecialties = [
+        ...new Set(response.data.map((doctor) => doctor.specialty)),
+      ];
+      setSpecialties(uniqueSpecialties);
+      setFilteredDoctors(response.data);
     };
 
     fetchDoctors();
   }, []);
+
+  useEffect(() => {
+    const filtered = doctors.filter((doctor) => {
+      const matchesName = doctor.user?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSpecialty = specialtyFilter
+        ? doctor.specialty.toLowerCase() === specialtyFilter.toLowerCase()
+        : true;
+      return matchesName && matchesSpecialty;
+    });
+
+    setFilteredDoctors(filtered);
+    setPage(0);
+  }, [searchTerm, specialtyFilter, doctors]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -37,6 +66,35 @@ function PatientsDoctors() {
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <Box mb={2} display="flex" justifyContent="space-between" gap={2}>
+        <Box flex={1}>
+          <TextField
+            label="Search by Doctor Name"
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            fullWidth
+          />
+        </Box>
+        <Box flex={1}>
+          <FormControl fullWidth>
+            <InputLabel>Filter by Specialty</InputLabel>
+            <Select
+              value={specialtyFilter}
+              onChange={(e) => setSpecialtyFilter(e.target.value)}
+              label="Filter by Specialty"
+            >
+              <MenuItem value="">All Specialties</MenuItem>
+              {specialties.map((specialty) => (
+                <MenuItem key={specialty} value={specialty}>
+                  {specialty}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+      </Box>
+
       <TableContainer sx={{ maxHeight: 500 }}>
         <Table stickyHeader aria-label="Doctors Table">
           <TableHead>
@@ -47,7 +105,7 @@ function PatientsDoctors() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {doctors
+            {filteredDoctors
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((doctor) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={doctor.id}>
@@ -62,7 +120,7 @@ function PatientsDoctors() {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={doctors.length}
+        count={filteredDoctors.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

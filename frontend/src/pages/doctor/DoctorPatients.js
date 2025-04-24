@@ -15,9 +15,13 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
 
 function DoctorPatients() {
   const [patients, setPatients] = useState([]);
+  const [filteredPatients, setFilteredPatients] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openDialog, setOpenDialog] = useState(false);
@@ -31,6 +35,7 @@ function DoctorPatients() {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPatients(response.data);
+        setFilteredPatients(response.data);
       } catch (error) {
         console.error('Failed to fetch patients:', error);
       }
@@ -38,6 +43,16 @@ function DoctorPatients() {
 
     fetchPatients();
   }, []);
+
+  useEffect(() => {
+    const filtered = patients.filter((patient) => {
+      const matchesName = patient.user?.name?.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesName;
+    });
+
+    setFilteredPatients(filtered);
+    setPage(0);
+  }, [searchTerm, patients]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -55,15 +70,15 @@ function DoctorPatients() {
         headers: { Authorization: `Bearer ${token}` },
         responseType: 'blob',
       });
-  
+
       const contentDisposition = response.headers['content-disposition'];
-      let filename = 'downloaded_file.docx'; 
+      let filename = 'downloaded_file.docx';
 
       if (contentDisposition && contentDisposition.includes('filename=')) {
         const match = contentDisposition.match(/filename="?([^"]+)"?/);
         if (match?.[1]) filename = match[1];
       }
-  
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -76,8 +91,6 @@ function DoctorPatients() {
       console.error('Failed to view/download file:', error);
     }
   };
-  
-  
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -86,6 +99,18 @@ function DoctorPatients() {
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <Box mb={2} display="flex" justifyContent="space-between" gap={2}>
+        <Box flex={1}>
+          <TextField
+            label="Search by Patient Name"
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            fullWidth
+          />
+        </Box>
+      </Box>
+
       <TableContainer sx={{ maxHeight: 500 }}>
         <Table stickyHeader aria-label="Patients Table">
           <TableHead>
@@ -98,7 +123,7 @@ function DoctorPatients() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {patients
+            {filteredPatients
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((patient) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={patient.id}>
@@ -130,7 +155,7 @@ function DoctorPatients() {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={patients.length}
+        count={filteredPatients.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
