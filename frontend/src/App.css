@@ -5,4 +5,6 @@
   .css-78c6dr-MuiToolbar-root-MuiTablePagination-toolbar .MuiTablePagination-actions{
     display: flex;
   }
-  
+  .css-1gak8h1-MuiToolbar-root-MuiTablePagination-toolbar{
+    white-space: nowrap;
+  }
