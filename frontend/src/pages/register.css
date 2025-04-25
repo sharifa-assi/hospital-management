@@ -1,43 +1,74 @@
+.register-page {
+top: 60px;
+display: flex;
+align-items: center;
+justify-content: center;
+height: 100vh;
+background:
+url("https://img.freepik.com/free-vector/national-doctor-s-day-hand-drawn-background_23-2149438164.jpg?semt=ais_hybrid&w=740");
+background-size: cover;
+background-position: center;
+}
 
-* {
-    margin: 0;
-    padding: 0;
-  }
-  
-  .register-page {
-    top:60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background: url("https://img.freepik.com/free-vector/national-doctor-s-day-hand-drawn-background_23-2149438164.jpg?semt=ais_hybrid&w=740");
-    background-size: cover;
-    background-position: center;
-    padding: 10% 0%;
-  }
-  
-  form{
-      background-color: white;
-      padding: 0px 60px;
-      border-radius: 10px;
-  }
-  
-  h1{
-      color: #8daac3;
-      text-align: center;
-  }
-  
-  button{
-      width: 100%;
-      height: 50px;
-      padding: 10px;
-      border: none;
-      background-color: #8daac3;
-      color: white;
-      border-radius: 5px;
-      font-weight: bold;
-      font-size: 18px;
-      cursor: pointer;
-      margin-top: 15px;
-      margin-bottom: 30px;
-  }
+form {
+background-color: white;
+padding: 0px 60px;
+border-radius: 10px;
+width: 100%;
+max-width: 500px;
+}
+
+h1 {
+color: #8daac3;
+text-align: center;
+}
+
+button {
+width: 100%;
+height: 50px;
+padding: 10px;
+border: none;
+background-color: #8daac3;
+color: white;
+border-radius: 5px;
+font-weight: bold;
+font-size: 18px;
+cursor: pointer;
+margin-top: 15px;
+margin-bottom: 30px;
+}
+
+.name-email-container {
+display: flex;
+justify-content: space-between;
+gap: 20px;
+margin-bottom: 20px;
+}
+
+.name-email-container .form-group {
+flex: 1;
+}
+
+.formInput.date-of-birth-container {
+width: 100%;
+margin-bottom: 20px;
+}
+
+.formInput.date-of-birth-container input {
+width: 95%;
+padding: 15px;
+margin: 10px 0px;
+border-radius: 5px;
+border: 1px solid gray;
+}
+
+.password-container {
+display: flex;
+justify-content: space-between;
+gap: 20px;
+margin-bottom: 20px;
+}
+
+.password-container .form-group {
+flex: 1;
+}

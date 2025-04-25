@@ -66,7 +66,7 @@ type: 'date',
 placeholder: 'Date of Birth',
 label: 'Date of Birth',
 required: true,
-}
+},
 ];
 
 const handleSubmit = async (e) => {
@@ -99,7 +99,6 @@ setError(msg);
 }
 };
 
-
 const onChange = (e) => {
 setValues({ ...values, [e.target.name]: e.target.value });
 };
@@ -108,9 +107,33 @@ return (
 <div className="register-page">
     <form onSubmit={handleSubmit}>
         <h1>Register</h1>
-        {inputs.map((input) => (
-        <Form key={input.id} {...input} value={values[input.name]} onChange={onChange} />
-        ))}
+
+        <div className="name-email-container">
+            {inputs.slice(0, 1).map((input) => (
+            <Form key={input.id} {...input} value={values[input.name]} onChange={onChange} />
+            ))}
+
+            {inputs.slice(1, 2).map((input) => (
+            <Form key={input.id} {...input} value={values[input.name]} onChange={onChange} />
+            ))}
+        </div>
+
+        <div className="formInput date-of-birth-container">
+            <label>Date of Birth</label>
+            <input type="date" name="date_of_birth" placeholder="Date of Birth" value={values.date_of_birth}
+                onChange={onChange} required className="dob" />
+        </div>
+
+        <div className="password-container">
+            {inputs.slice(2, 3).map((input) => (
+            <Form key={input.id} {...input} value={values[input.name]} onChange={onChange} />
+            ))}
+
+            {inputs.slice(3, 4).map((input) => (
+            <Form key={input.id} {...input} value={values[input.name]} onChange={onChange} />
+            ))}
+        </div>
+
         <button type="submit">Register</button>
         {error && <p className="error">{error}</p>}
     </form>
