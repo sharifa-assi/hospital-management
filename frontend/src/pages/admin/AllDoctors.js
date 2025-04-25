@@ -9,6 +9,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TablePagination from '@mui/material/TablePagination';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 function AllDoctors() {
   const [doctors, setDoctors] = useState([]);
@@ -70,27 +74,35 @@ function AllDoctors() {
   return (
     <>
       <div className="page-main-title">All Doctors</div>
-      <div style={{ display: 'flex', gap: '20px' }}>
-        <input
-          type="text"
-          placeholder="Search by name or specialty..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ padding: '8px', width: '300px', borderRadius: '8px', border: '1px solid #ccc' }}
-        />
-        <select
-          value={selectedSpecialty}
-          onChange={handleSpecialtyChange}
-          style={{ padding: '8px', borderRadius: '8px', border: '1px solid #ccc' }}
-        >
-          <option value="">All Specialties</option>
-          {specialties.map((spec) => (
-            <option key={spec} value={spec}>
-              {spec}
-            </option>
-          ))}
-        </select>
-      </div>
+      <Box mb={2} display="flex" justifyContent="space-between" gap={2}>
+        <Box flex={1}>
+          <TextField
+            label="Search by Name or Specialty"
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            fullWidth
+          />
+        </Box>
+        <Box flex={1}>
+          <Select
+            value={selectedSpecialty}
+            onChange={handleSpecialtyChange}
+            fullWidth
+            displayEmpty
+            inputProps={{ 'aria-label': 'Specialty' }}
+          >
+            <MenuItem value="">
+              <em>All Specialties</em>
+            </MenuItem>
+            {specialties.map((spec) => (
+              <MenuItem key={spec} value={spec}>
+                {spec}
+              </MenuItem>
+            ))}
+          </Select>
+        </Box>
+      </Box>
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 600 }}>

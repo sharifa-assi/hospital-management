@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import { Box, TextField } from '@mui/material';
 import axios from '../../api/axios';
 
 function Patients() {
@@ -72,22 +73,18 @@ function Patients() {
 
   return (
     <>
-      <div>
-        <div className="page-main-title">All Patients</div>
-        <input
-          type="text"
-          placeholder="Search by name or email..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            padding: '12px 16px',
-            width: '300px',
-            borderRadius: '8px',
-            border: '1px solid #ccc',
-            fontSize: '16px'
-          }}
-        />
-      </div>
+      <div className="page-main-title">All Patients</div>
+      <Box mb={2} display="flex" justifyContent="space-between" gap={2}>
+        <Box flex={1}>
+          <TextField
+            label="Search by Name or Email"
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            fullWidth
+          />
+        </Box>
+      </Box>
 
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 500 }}>
@@ -108,11 +105,7 @@ function Patients() {
                   <TableRow hover role="checkbox" tabIndex={-1} key={patient.id}>
                     {columns.map((column) => {
                       const value = patient[column.id];
-                      return (
-                        <TableCell key={column.id}>
-                          {value}
-                        </TableCell>
-                      );
+                      return <TableCell key={column.id}>{value}</TableCell>;
                     })}
                   </TableRow>
                 ))}
