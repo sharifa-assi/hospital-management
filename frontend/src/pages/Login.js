@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
-import Form from '../components/form/Form';
 import './register.css';
 
 function Login() {
@@ -12,27 +11,6 @@ function Login() {
     password: '',
   });
 
-  const inputs = [
-    {
-      id: 1,
-      name: 'email',
-      type: 'email',
-      placeholder: 'Email',
-      errorMessage: 'It should be a valid email address!',
-      label: 'Email',
-      required: true,
-    },
-    {
-      id: 2,
-      name: 'password',
-      type: 'password',
-      placeholder: 'Password',
-      errorMessage: 'Password is required!',
-      label: 'Password',
-      required: true,
-    },
-  ];
-
   const onChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
   };
@@ -42,12 +20,11 @@ function Login() {
     try {
       const response = await axios.post('/login', values);
       localStorage.setItem('token', response.data.token);
-  
+
       const { id, name, email, role } = response.data.user;
-      localStorage.setItem('user', JSON.stringify({ id, name, email, role })); 
-  
+      localStorage.setItem('user', JSON.stringify({ id, name, email, role }));
+
       setError('');
-      
       window.location.reload();
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed');
@@ -58,14 +35,33 @@ function Login() {
     <div className="register-page">
       <form onSubmit={handleSubmit}>
         <h1>Login</h1>
-        {inputs.map((input) => (
-          <Form
-            key={input.id}
-            {...input}
-            value={values[input.name]}
+
+        <div className="formInput login-fields-container">
+          <label>Email</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={values.email}
             onChange={onChange}
+            required
+            className="input-full"
           />
-        ))}
+        </div>
+
+        <div className="formInput login-fields-container">
+          <label>Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={values.password}
+            onChange={onChange}
+            required
+            className="input-full"
+          />
+        </div>
+
         <button type="submit">Login</button>
         {error && <p className="error">{error}</p>}
       </form>

@@ -72,3 +72,7 @@ margin-bottom: 20px;
 .password-container .form-group {
 flex: 1;
 }
+
+.login-fields-container{
+width: 100% !important;
+}
