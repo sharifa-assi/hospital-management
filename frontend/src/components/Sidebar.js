@@ -77,7 +77,7 @@ return (
                     isActive ? "sidebar-item active-link" : "sidebar-item"
                     }
                     >
-                    Book an Appointment
+                    Booking
                 </NavLink>
 
             </li>

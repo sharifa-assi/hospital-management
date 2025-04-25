@@ -51,14 +51,3 @@
     margin-top: 10px;
     text-align: center;
   }
-  
-  .message.success {
-    color: green;
-    background-color: #e8f9e8;
-  }
-  
-  .message.error {
-    color: red;
-    background-color: #f8d7da;
-  }
-  

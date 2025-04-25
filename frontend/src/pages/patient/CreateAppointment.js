@@ -9,6 +9,7 @@ function CreateAppointment() {
     appointment_time: '',
   });
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
   const [doctors, setDoctors] = useState([]);
 
   useEffect(() => {
@@ -31,9 +32,8 @@ function CreateAppointment() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-  
       const scheduled_at = `${form.appointment_date} ${form.appointment_time}`;
-  
+
       await axios.post('/patient/appointments/store', {
         doctor_id: form.doctor_id,
         scheduled_at: scheduled_at,
@@ -43,22 +43,28 @@ function CreateAppointment() {
           'Content-Type': 'application/json',
         },
       });
-  
+
       setMessage('Appointment created successfully!');
       setForm({
         doctor_id: '',
         appointment_date: '',
         appointment_time: '',
       });
+      setError('');
     } catch (error) {
       console.error(error.response?.data || error.message);
-      setMessage(error.response?.data?.error || 'Failed to create appointment. Please try again.');
+      setError(error.response?.data?.error || 'Failed to create appointment. Please try again.');
+      setMessage('');
     }
   };
 
   return (
     <div className="appointment-container">
       <h2>Book an Appointment</h2>
+      
+      {message && <p className="message success">{message}</p>}
+      {error && <p className="message error">{error}</p>}
+
       <form onSubmit={handleSubmit} className="appointment-form">
         <div className="form-group">
           <label htmlFor="doctor_id">Select Doctor:</label>
@@ -104,8 +110,6 @@ function CreateAppointment() {
 
         <button type="submit" className="submit-btn">Create Appointment</button>
       </form>
-
-      {message && <p className="message">{message}</p>}
     </div>
   );
 }
