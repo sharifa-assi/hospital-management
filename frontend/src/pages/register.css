@@ -8,6 +8,11 @@ background:
 url("https://img.freepik.com/free-vector/national-doctor-s-day-hand-drawn-background_23-2149438164.jpg?semt=ais_hybrid&w=740");
 background-size: cover;
 background-position: center;
+
+.error {
+  color: red;
+  font-size: 14px;
+}
 }
 
 form {
