@@ -32,6 +32,7 @@
   
   .sidebar-item:active {
     background-color:  #8daac3;
+    border-radius: 5px;
   }
   
   @media (max-width: 768px) {
@@ -45,6 +46,7 @@
   }
   .sidebar-item.active-link {
     background-color: #8daac3;
+    border-radius: 5px;
     color: #fff;
   }
   .sidebar-logo {
