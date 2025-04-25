@@ -22,6 +22,8 @@ function App() {
   const contentStyle = {
     marginLeft: token ? '250px' : '0',
     width: '100%',
+    padding: token ? '30px 30px 30px 30px' : '0',
+    boxSizing: 'border-box',
   };
 
   return (

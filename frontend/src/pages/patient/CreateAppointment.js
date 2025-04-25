@@ -58,7 +58,7 @@ function CreateAppointment() {
 
   return (
     <div className="appointment-container">
-      <h2>Create Appointment</h2>
+      <h2>Book an Appointment</h2>
       <form onSubmit={handleSubmit} className="appointment-form">
         <div className="form-group">
           <label htmlFor="doctor_id">Select Doctor:</label>

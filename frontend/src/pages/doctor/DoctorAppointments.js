@@ -82,88 +82,91 @@ function DoctorAppointments() {
   };
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', p: 2 }}>
-      <Box mb={2} display="flex" justifyContent="space-between" gap={2}>
-        <Box flex={1}>
-          <TextField
-            label="Search by Patient Name"
-            variant="outlined"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            fullWidth
-          />
+    <div>
+      <div className="page-main-title">Appointments</div>
+      <Paper sx={{ width: '100%', overflow: 'hidden', p: 2 }}>
+        <Box mb={2} display="flex" justifyContent="space-between" gap={2}>
+          <Box flex={1}>
+            <TextField
+              label="Search by Patient Name"
+              variant="outlined"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              fullWidth
+            />
+          </Box>
+          <Box flex={1}>
+            <FormControl fullWidth>
+              <InputLabel>Status Filter</InputLabel>
+              <Select
+                value={statusFilter}
+                label="Status Filter"
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="scheduled">Scheduled</MenuItem>
+                <MenuItem value="completed">Completed</MenuItem>
+                <MenuItem value="canceled">Canceled</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
         </Box>
-        <Box flex={1}>
-          <FormControl fullWidth>
-            <InputLabel>Status Filter</InputLabel>
-            <Select
-              value={statusFilter}
-              label="Status Filter"
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="scheduled">Scheduled</MenuItem>
-              <MenuItem value="completed">Completed</MenuItem>
-              <MenuItem value="canceled">Canceled</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-      </Box>
 
-      <TableContainer sx={{ maxHeight: 500 }}>
-        <Table stickyHeader aria-label="Appointments Table">
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Patient</TableCell>
-              <TableCell>Scheduled At</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredAppointments
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((appointment) => (
-                <TableRow hover key={appointment.id}>
-                  <TableCell>{appointment.id}</TableCell>
-                  <TableCell>
-                    {appointment.patient?.user?.name || 'Unknown'}
-                  </TableCell>
-                  <TableCell>{new Date(appointment.scheduled_at).toLocaleString()}</TableCell>
-                  <TableCell>{appointment.status}</TableCell>
-                  <TableCell>
-                    <FormControl fullWidth size="small">
-                      <InputLabel>Status</InputLabel>
-                      <Select
-                        value={appointment.status}
-                        label="Status"
-                        onChange={(e) =>
-                          handleStatusChange(appointment.id, e.target.value)
-                        }
-                      >
-                        <MenuItem value="scheduled">Scheduled</MenuItem>
-                        <MenuItem value="completed">Completed</MenuItem>
-                        <MenuItem value="canceled">Canceled</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+        <TableContainer sx={{ maxHeight: 500 }}>
+          <Table stickyHeader aria-label="Appointments Table">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Patient</TableCell>
+                <TableCell>Scheduled At</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredAppointments
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((appointment) => (
+                  <TableRow hover key={appointment.id}>
+                    <TableCell>{appointment.id}</TableCell>
+                    <TableCell>
+                      {appointment.patient?.user?.name || 'Unknown'}
+                    </TableCell>
+                    <TableCell>{new Date(appointment.scheduled_at).toLocaleString()}</TableCell>
+                    <TableCell>{appointment.status}</TableCell>
+                    <TableCell>
+                      <FormControl fullWidth size="small">
+                        <InputLabel>Status</InputLabel>
+                        <Select
+                          value={appointment.status}
+                          label="Status"
+                          onChange={(e) =>
+                            handleStatusChange(appointment.id, e.target.value)
+                          }
+                        >
+                          <MenuItem value="scheduled">Scheduled</MenuItem>
+                          <MenuItem value="completed">Completed</MenuItem>
+                          <MenuItem value="canceled">Canceled</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={filteredAppointments.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </Paper>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={filteredAppointments.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </div>
   );
 }
 

@@ -69,10 +69,8 @@ function AllDoctors() {
 
   return (
     <>
-      <Typography variant="h6" sx={{ p: 2 }}>
-        All Doctors
-      </Typography>
-      <div style={{ display: 'flex', gap: '20px', margin: '10px 20px' }}>
+      <div className="page-main-title">All Doctors</div>
+      <div style={{ display: 'flex', gap: '20px' }}>
         <input
           type="text"
           placeholder="Search by name or specialty..."

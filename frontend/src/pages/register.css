@@ -7,15 +7,12 @@
   
   
   .register-page {
+    top:60px;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background: linear-gradient(
-        rgba(255, 255, 255, 0.7),
-        rgba(255, 255, 255, 0.3)
-      ),
-      url("https://images.pexels.com/photos/114979/pexels-photo-114979.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500");
+    background: url("https://img.freepik.com/free-vector/national-doctor-s-day-hand-drawn-background_23-2149438164.jpg?semt=ais_hybrid&w=740");
     background-size: cover;
     background-position: center;
   }
@@ -27,7 +24,7 @@
   }
   
   h1{
-      color: #c38d9e;
+      color: #8daac3;
       text-align: center;
   }
   
@@ -36,7 +33,7 @@
       height: 50px;
       padding: 10px;
       border: none;
-      background-color: #c38d9e;
+      background-color: #8daac3;
       color: white;
       border-radius: 5px;
       font-weight: bold;

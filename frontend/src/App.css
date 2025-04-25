@@ -8,3 +8,9 @@
   .css-1gak8h1-MuiToolbar-root-MuiTablePagination-toolbar{
     white-space: nowrap;
   }
+  .page-main-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+  }  

@@ -43,9 +43,8 @@ function NavBar() {
   return (
     <nav className="navbar">
       <div className="nav-container">
-        <NavLink exact="true" to="/" className="nav-logo">
-          Hospital Management<i className="fas fa-code"></i>
-        </NavLink>
+        <div className="nav-logo">
+        </div>
 
         <ul className={click ? "nav-menu active" : "nav-menu"}>
           {!isLoggedIn ? (

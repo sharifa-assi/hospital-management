@@ -72,7 +72,8 @@ function Patients() {
 
   return (
     <>
-      <div style={{ padding: '16px 24px' }}>
+      <div>
+        <div className="page-main-title">All Patients</div>
         <input
           type="text"
           placeholder="Search by name or email..."

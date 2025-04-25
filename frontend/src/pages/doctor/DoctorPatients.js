@@ -98,90 +98,93 @@ function DoctorPatients() {
   };
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <Box mb={2} display="flex" justifyContent="space-between" gap={2}>
-        <Box flex={1}>
-          <TextField
-            label="Search by Patient Name"
-            variant="outlined"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            fullWidth
-          />
+    <div>
+      <div className="page-main-title">Patients</div>
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+        <Box mb={2} display="flex" justifyContent="space-between" gap={2}>
+          <Box flex={1}>
+            <TextField
+              label="Search by Patient Name"
+              variant="outlined"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              fullWidth
+            />
+          </Box>
         </Box>
-      </Box>
 
-      <TableContainer sx={{ maxHeight: 500 }}>
-        <Table stickyHeader aria-label="Patients Table">
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Date of Birth</TableCell>
-              <TableCell>Files</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredPatients
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((patient) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={patient.id}>
-                  <TableCell>{patient.id}</TableCell>
-                  <TableCell>{patient.user.name}</TableCell>
-                  <TableCell>{patient.user.email}</TableCell>
-                  <TableCell>{patient.date_of_birth}</TableCell>
-                  <TableCell>
-                    {patient.files && patient.files.length > 0 ? (
-                      patient.files.map((file) => (
-                        <IconButton
-                          key={file.id}
-                          color="primary"
-                          onClick={() => handleViewFile(file.id)}
-                          title={file.filename}
-                        >
-                          <FileCopyIcon />
-                        </IconButton>
-                      ))
-                    ) : (
-                      <span>No files</span>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={filteredPatients.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+        <TableContainer sx={{ maxHeight: 500 }}>
+          <Table stickyHeader aria-label="Patients Table">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Date of Birth</TableCell>
+                <TableCell>Files</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredPatients
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((patient) => (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={patient.id}>
+                    <TableCell>{patient.id}</TableCell>
+                    <TableCell>{patient.user.name}</TableCell>
+                    <TableCell>{patient.user.email}</TableCell>
+                    <TableCell>{patient.date_of_birth}</TableCell>
+                    <TableCell>
+                      {patient.files && patient.files.length > 0 ? (
+                        patient.files.map((file) => (
+                          <IconButton
+                            key={file.id}
+                            color="primary"
+                            onClick={() => handleViewFile(file.id)}
+                            title={file.filename}
+                          >
+                            <FileCopyIcon />
+                          </IconButton>
+                        ))
+                      ) : (
+                        <span>No files</span>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={filteredPatients.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="lg" fullWidth>
-        <DialogTitle>View File</DialogTitle>
-        <DialogContent>
-          {fileUrl && (
-            <iframe
-              src={fileUrl}
-              title="File Viewer"
-              width="100%"
-              height="500px"
-              style={{ border: 'none' }}
-            ></iframe>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Paper>
+        <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="lg" fullWidth>
+          <DialogTitle>View File</DialogTitle>
+          <DialogContent>
+            {fileUrl && (
+              <iframe
+                src={fileUrl}
+                title="File Viewer"
+                width="100%"
+                height="500px"
+                style={{ border: 'none' }}
+              ></iframe>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Paper>
+    </div>
   );
 }
 

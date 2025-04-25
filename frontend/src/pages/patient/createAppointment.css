@@ -37,14 +37,14 @@
   }
   
   .form-input:focus {
-    border-color: #41b3a3;
+    border-color: #398eaa;
     outline: none;
   }
   
   .submit-btn {
     padding: 12px;
     font-size: 1.1rem;
-    background-color: #41b3a3;
+    background-color: #398eaa;
     color: white;
     border: none;
     border-radius: 5px;
