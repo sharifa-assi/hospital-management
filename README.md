@@ -2,6 +2,8 @@
 
 A web application for managing hospital appointments and patient-doctor interactions, built with React and Laravel. The system supports three types of users: Admin, Doctor, and Patient.
 
+📝 **Note:** When a user registers through `/register`, they are automatically created with the **Patient** role and only **Admin** can create user with **Doctor** role.
+
 ## Features
 
 ### Admin Features:
