@@ -26,6 +26,17 @@ function App() {
     boxSizing: 'border-box',
   };
 
+  const isTokenExpired = () => {
+    const expirationTime = localStorage.getItem('tokenExpiration');
+    return expirationTime && new Date().getTime() > new Date(expirationTime).getTime();
+  };
+
+  if (isTokenExpired()) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    return <Navigate to="/login" />;
+  }
+
   return (
     <BrowserRouter>
       <Navbar />
