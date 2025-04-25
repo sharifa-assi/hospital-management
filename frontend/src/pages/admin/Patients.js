@@ -23,10 +23,11 @@ function Patients() {
     { id: 'name', label: 'Name', minWidth: 170 },
     { id: 'email', label: 'Email', minWidth: 200 },
     { id: 'dob', label: 'Date of Birth', minWidth: 150 },
+    { id: 'doctors', label: 'Assigned Doctors', minWidth: 200 }, 
   ];
 
-  function createData(id, name, email, dob) {
-    return { id, name, email, dob };
+  function createData(id, name, email, dob, doctors) {
+    return { id, name, email, dob, doctors };
   }
 
   React.useEffect(() => {
@@ -40,7 +41,13 @@ function Patients() {
         console.log('Response Data:', response.data);
 
         const newRows = response.data.map((patient) =>
-          createData(patient.id, patient.user.name, patient.user.email, patient.date_of_birth)
+          createData(
+            patient.id,
+            patient.user.name,
+            patient.user.email,
+            patient.date_of_birth,
+            patient.doctors.map(doctor => doctor.user.name).join(", ")
+          )
         );
         setPatients(newRows);
       } catch (err) {
