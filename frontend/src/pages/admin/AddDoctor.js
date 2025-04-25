@@ -30,6 +30,20 @@ function AddDoctor() {
       return;
     }
 
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!emailPattern.test(form.email)) {
+      setError('Invalid email format');
+      return;
+    }
+
+    const passwordPattern = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$/;
+    if (!passwordPattern.test(form.password)) {
+      setError(
+        'Password must be at least 8 characters long and include 1 uppercase letter, 1 number, and 1 special character'
+      );
+      return;
+    }
+
     setError('');
 
     try {
@@ -55,6 +69,10 @@ function AddDoctor() {
   return (
     <div className="form-container">
       <h2>Add New Doctor</h2>
+      
+      {message && <p className="message success">{message}</p>}
+      {error && <p className="message error">{error}</p>}
+
       <form onSubmit={handleSubmit} className="form">
         <div className="form-group">
           <label htmlFor="name">Name:</label>
@@ -66,7 +84,6 @@ function AddDoctor() {
             className="form-input"
           />
         </div>
-        
         <div className="form-group">
           <label htmlFor="email">Email:</label>
           <input
@@ -116,9 +133,6 @@ function AddDoctor() {
 
         <button type="submit" className="submit-btn">Add Doctor</button>
       </form>
-
-      {message && <p className="message success">{message}</p>}
-      {error && <p className="message error">{error}</p>}
     </div>
   );
 }
